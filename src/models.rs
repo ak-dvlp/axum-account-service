@@ -1,34 +1,38 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
 
+// Добавляем структуру Claims для JWT
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Claims {
+    pub sub: Uuid, // Теперь ID пользователя — это Uuid
+    pub exp: usize,
+}
+
 // --- МОДЕЛИ ПОЛЬЗОВАТЕЛЯ (Users) ---
 
-// Модель, которая в точности сопоставляется с таблицей в PostgreSQL
 #[derive(Debug, Serialize, FromRow)]
 pub struct User {
     pub id: Uuid,
     pub email: String,
     #[serde(skip_serializing)] // Пароль никогда не должен уходить в JSON-ответах!
     pub password_hash: String,
-    pub created_at: chrono::DateTime<chrono::Utc>,
+    pub created_at: DateTime<Utc>,
 }
 
-// Структура для входящего JSON-запроса при регистрации/авторизации
 #[derive(Debug, Deserialize)]
-pub struct RegisterRequest {
+pub struct AuthRequest {
     pub email: String,
     pub password: String,
 }
 
-// Структура ответа после успешной авторизации
 #[derive(Debug, Serialize)]
 pub struct AuthResponse {
     pub token: String,
     pub user: UserResponse,
 }
 
-// Безопасное представление пользователя для Front-end
 #[derive(Debug, Serialize)]
 pub struct UserResponse {
     pub id: Uuid,
@@ -40,13 +44,12 @@ pub struct UserResponse {
 #[derive(Debug, Serialize, FromRow)]
 pub struct Item {
     pub id: i32,
-    pub user_id: Uuid, // Внешний ключ, связывающий объект с пользователем
+    pub user_id: Uuid,
     pub title: String,
     pub description: Option<String>,
-    pub created_at: chrono::DateTime<chrono::Utc>,
+    pub created_at: DateTime<Utc>,
 }
 
-// Структура для создания нового объекта
 #[derive(Debug, Deserialize)]
 pub struct CreateItemRequest {
     pub title: String,

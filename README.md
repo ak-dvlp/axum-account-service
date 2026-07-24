@@ -102,19 +102,7 @@ CREATE INDEX idx_items_user_id ON items(user_id);
 sqlx migrate run
 ```
 
-#### Редактирование базового файла [`main.rs`](src/main.rs)
-
-#### Создание моделей данных
-
-Перед созданием следует убедиться, что в `Cargo.toml` для пакета `serde` включён флаг `derive`.
-
-Создание файла [`models.rs`](src/models.rs). Добавление базовых моделей для пользователя (`User`) и объектов (`Item`).
-
-#### Настройка обработки регистрации с хэшированием пароля
-Создание файла [`auth.rs`](src/auth.rs)
 </details>
-
----
 
 <details>
 <summary style="font-size: 1.25em; font-weight: 600;">🗄️ Структура проекта</summary>
@@ -122,6 +110,7 @@ sqlx migrate run
 ```bash
 src/
 ├── main.rs          # Точка входа: инициализация БД, CORS и запуск сервера
+├── models.rs        # Структуры данных
 ├── routes/          # Маршруты и обработчики
 │   ├── mod.rs       # Объединение маршрутов
 │   ├── auth.rs      # Регистрация и вход
