@@ -1,3 +1,7 @@
+## Серверная часть
+
+Количество потоков при сборке серверной части ограничено 4-мя.
+
 <details>
 <summary style="font-size: 1.25em; font-weight: 600;">🛠️ Этапы создания рабочей основы проекта</summary>
 
@@ -108,19 +112,45 @@ sqlx migrate run
 <summary style="font-size: 1.25em; font-weight: 600;">🗄️ Структура проекта</summary>
 
 ```bash
-src/
-├── main.rs          # Точка входа: инициализация БД, CORS и запуск сервера
-├── models.rs        # Структуры данных
-├── routes/          # Маршруты и обработчики
-│   ├── mod.rs       # Объединение маршрутов
-│   ├── auth.rs      # Регистрация и вход
-│   ├── user.rs      # Профиль: получение и обновление
-│   └── items.rs     # Записи: получение и создание
-├── middleware/      # Промежуточный слой
-│   ├── mod.rs
-│   └── auth.rs
-├── models.rs        # Структуры данных для БД и API
-└── utils.rs         # Вспомогательные функции (хеширование паролей, генерация JWT)
+├── client
+│   ├── .vscode/
+│   ├── node_modules/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── App.vue
+│   │   ├── main.ts
+│   │   └── style.css
+│   ├── index.html
+│   ├── package.json
+│   ├── README.md
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   ├── vite.config.ts
+│   └── yarn.lock
+├── server
+│   ├── migrations/
+│   ├── src/
+│   │   ├── middleware/         # Промежуточный слой
+│   │   │   ├── auth.rs
+│   │   │   └── mod.rs
+│   │   ├── routes/             # Маршруты и обработчики
+│   │   │   ├── auth.rs         # Регистрация и вход
+│   │   │   ├── items.rs        # Записи: получение и создание
+│   │   │   ├── mod.rs          # Объединение маршрутов
+│   │   │   └── user.rs         # Профиль: получение и обновление
+│   │   ├── main.rs             # Точка входа
+│   │   ├── models.rs           # Структуры данных для БД и API
+│   │   └── utils.rs            # Вспомогательные функции (хеширование паролей, генерация JWT)
+│   └── Cargo.toml
+├── target/
+├── .env
+├── .gitignore
+├── Cargo.lock
+├── Cargo.toml
+├── Justfile
+└── README.md
 ```
-
 </summary>

@@ -1,2 +1,9 @@
+# Серверная часть
 /target
+
+# Клиентская часть
+/client/node_modules
+/client/dist
+
+# Переменные окружения 
 .env
