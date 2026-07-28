@@ -43,15 +43,15 @@ pub struct UserResponse {
 
 #[derive(Debug, Serialize, FromRow)]
 pub struct Item {
-    pub id: i32,
+    pub id: Uuid,
     pub user_id: Uuid,
     pub title: String,
-    pub description: Option<String>,
+    pub content: Option<String>,
     pub created_at: DateTime<Utc>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct CreateItemRequest {
     pub title: String,
-    pub description: Option<String>,
+    pub content: Option<String>,
 }
