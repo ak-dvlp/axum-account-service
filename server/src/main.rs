@@ -37,9 +37,17 @@ async fn main() {
         .await
         .expect("Не удалось подключиться к базе данных");
 
+    // Автоматическая миграция (для начального этапа)
+    tracing::info!("Проверка и применение миграций базы данных...");
+    sqlx::migrate!("./migrations") // Относительный путь к папке миграций внутри server/
+        .run(&pool)
+        .await
+        .expect("Не удалось применить миграции базы данных");
+    tracing::info!("Миграции успешно проверены и применены!");
+
     let cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
-        .allow_origin(Any) // Разрешаем всё для этапа разработки основы проекта
+        .allow_origin(Any) // Разрешаем всё в рамках начального этапа разработки
         // .allow_origin("https://mydomain.com".parse::<axum::http::HeaderValue>().unwrap())
         .allow_headers([header::AUTHORIZATION, header::CONTENT_TYPE]);
 

@@ -1,0 +1,54 @@
+/* Палитра. */
+:root {
+  --neutral-100: hsl(0, 0%, 96%);
+  --neutral-200: hsl(0, 0%, 90%);
+  --neutral-300: hsl(0, 0%, 83%);
+  --neutral-400: hsl(0, 0%, 63%);
+  --neutral-500: hsl(0, 0%, 45%);
+  --neutral-600: hsl(0, 0%, 32%);
+  --neutral-800: hsl(0, 0%, 15%);
+
+  --slate-100: hsl(210, 40%, 96%);
+  --slate-200: hsl(214, 32%, 91%);
+  --slate-300: hsl(212, 29%, 84%);
+  --slate-400: hsl(215, 23%, 65%);
+  --slate-500: hsl(215, 18%, 47%);
+  --slate-600: hsl(215, 22%, 35%);
+
+  --blue-300: hsl(212, 100%, 81%);
+  --blue-400: hsl(212, 100%, 66%);
+  --blue-500: hsl(216, 100%, 58%);
+  --emerald-400: hsl(161, 100%, 42%);
+  --emerald-500: hsl(160, 100%, 37%);
+  --rose-400: hsl(350, 100%, 69%);
+  --red-500: hsl(357, 96%, 58%);
+  --amber-400: hsl(44, 100%, 50%);
+  --amber-500: hsl(36, 100%, 50%);
+  --violet-700: hsl(263, 70%, 50%);
+
+  --cloud-sky: hsl(212, 94%, 20%);
+}
+
+/** Светлая тема */
+:root {
+  --color-background: var(--neutral-100);
+  --color-text: var(--neutral-800);
+  --color-divider: var(--neutral-300);
+  --color-border: var(--neutral-400);
+}
+
+/** Тёмная тема */
+.dark {
+  --color-background: var(--neutral-800);
+  --color-text: var(--neutral-100);
+  --color-divider: var(--neutral-500);
+  --color-border: var(--neutral-400);
+}
+
+/* Сопоставление семантических переменных с пользовательскими классами Tailwind */
+@theme inline {
+  --color-my-body-background: var(--color-background);
+  --color-my-body-text: var(--color-text);
+  --color-my-divider: var(--color-divider);
+  --color-my-border: var(--color-border);
+}
