@@ -51,4 +51,8 @@
   --color-my-body-text: var(--color-text);
   --color-my-divider: var(--color-divider);
   --color-my-border: var(--color-border);
+
+  --shadow-my-card: 2px 3px 10px 0 var(--color-border);
+  --color-my-theme-light: var(--neutral-100);
+  --color-my-theme-dark: var(--neutral-800);
 }
