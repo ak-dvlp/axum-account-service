@@ -68,21 +68,6 @@ pub async fn register(
         .execute(&state.db)
         .await;
 
-    sqlx::query("INSERT INTO users (email, password_hash) VALUES ($1, $2)")
-        .bind(&payload.email)
-        .bind(&hashed)
-        .execute(&state.db)
-        .await
-        .map_err(|e| {
-            if let Some(code) = e.as_database_error().and_then(|de| de.code()) {
-                if code == "23505" {
-                    return AppError::UserAlreadyExists;
-                }
-            }
-
-            AppError::DatabaseError(e)
-        })?;
-
     // Обработка результата
     match result {
         Ok(_) => {
@@ -95,12 +80,13 @@ pub async fn register(
         }
         Err(err) => {
             // Проверка уникальности адреса эл. почты (код ошибки 23505 в Postgres)
-            if let Some(db_err) = err.as_database_error() {
-                if db_err.code() == Some(std::borrow::Cow::Borrowed("23505")) {
+            if let Some(code) = err.as_database_error().and_then(|de| de.code()) {
+                if code == "23505" {
                     return Err(AppError::UserAlreadyExists);
                 }
             }
 
+            // Журналирование любых других ошибок БД перед возвратом
             tracing::error!(error = ?err, "Ошибка при регистрации пользователя в БД");
             Err(AppError::DatabaseError(err))
         }
@@ -112,18 +98,23 @@ pub async fn login(
     Json(payload): Json<AuthRequest>,
 ) -> Result<Json<AuthResponse>, AppError> {
     // Поиск пользователя в БД по адресу эл. почты
-    let user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE email = $1")
+    let result = sqlx::query_as::<_, User>("SELECT * FROM users WHERE email = $1")
         .bind(&payload.email)
         .fetch_optional(&state.db)
-        .await
-        .map_err(|err| {
-            tracing::error!(error = ?err, email = %payload.email, "Ошибка БД при поиске пользователя для входа");
-            AppError::DatabaseError(err)
-        })?
-        .ok_or_else(|| {
+        .await;
+
+    // Обработка результата поиска через match
+    let user = match result {
+        Ok(Some(user)) => user,
+        Ok(None) => {
             tracing::warn!(email = %payload.email, "Попытка входа с несуществующим email");
-            AppError::InvalidCredentials
-        })?;
+            return Err(AppError::InvalidCredentials);
+        }
+        Err(err) => {
+            tracing::error!(error = ?err, email = %payload.email, "Ошибка БД при поиске пользователя для входа");
+            return Err(AppError::DatabaseError(err));
+        }
+    };
 
     // Проверка корректности пароля через bcrypt
     let is_valid = verify_password(&payload.password, &user.password_hash).map_err(|err| {
